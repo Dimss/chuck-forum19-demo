@@ -1,0 +1,11 @@
+namespace: chuck
+image: "docker.io/dimssss/chuck-api:latest"
+network:
+  host: chuck-api.apps.b.okto.ocplab.io
+  portName: http
+  targetPort: 8080
+db:
+  host: "mysql-db"
+  name: "chuck"
+  user: "chuck"
+  pass: "chuck"

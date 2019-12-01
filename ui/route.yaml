@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: chuck-ui
+  namespace: chuck
+spec:
+  host: chuck-ui.apps.b.okto.ocplab.io
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: chuck-ui
