@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: chuck-db
-  namespace: gitops-infra
+  name: chuck-ui
+  namespace: argocd
 spec:
-  project: gitops-infra
+  project: chuck-project
   destination:
     namespace: chuck
     server: 'https://kubernetes.default.svc'
@@ -13,7 +13,7 @@ spec:
     repoURL: 'https://github.com/Dimss/chuck-forum19-demo.git'
     targetRevision: HEAD
     directory:
-      recurse: true
+      recurse: false
   syncPolicy:
     automated:
       prune: true

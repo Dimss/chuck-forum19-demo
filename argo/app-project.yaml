@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: chuck-project
-  namespace: gitops-infra
+  namespace: argocd
 spec:
   destinations:
   - namespace: chuck
