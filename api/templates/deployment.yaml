@@ -1,22 +1,23 @@
-kind: DeploymentConfig
-apiVersion: "apps.openshift.io/v1"
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  labels:
-    app: {{ .Chart.Name }}
   name: {{ .Chart.Name }}
   namespace: chuck
+  labels:
+    app: {{ .Chart.Name }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
         app: {{ .Chart.Name }}
-        version: v1
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
-          imagePullPolicy: Always
           ports:
             - containerPort: {{.Values.network.targetPort}}
           env:

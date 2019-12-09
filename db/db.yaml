@@ -1,128 +1,168 @@
-kind: List
 apiVersion: v1
-metadata: {}
-items:
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    labels:
-      template: mysql-ephemeral-template
+kind: Secret
+metadata:
+  labels:
+    template: mysql-ephemeral-template
+  name: mysql-db
+  namespace: chuck
+stringData:
+  database-name: chuck
+  database-password: chuck
+  database-root-password: VDcnNwDLUFxVYKgR
+  database-user: chuck
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    template: mysql-ephemeral-template
+  name: mysql-db
+  namespace: chuck
+spec:
+  ports:
+  - name: mysql
+    nodePort: 0
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
     name: mysql-db
-    namespace: chuck
-  stringData:
-    database-name: chuck
-    database-password: chuck
-    database-root-password: VDcnNwDLUFxVYKgR
-    database-user: chuck
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      template: mysql-ephemeral-template
-    name: mysql-db
-    namespace: chuck
-  spec:
-    ports:
-    - name: mysql
-      nodePort: 0
-      port: 3306
-      protocol: TCP
-      targetPort: 3306
-    selector:
-      name: mysql-db
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
-- apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
-  metadata:
-    annotations:
-      template.alpha.openshift.io/wait-for-ready: 'true'
-    labels:
-      template: mysql-ephemeral-template
-    name: mysql-db
-    namespace: chuck
-  spec:
-    replicas: 1
-    selector:
-      name: mysql-db
-    strategy:
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          name: mysql-db
-      spec:
-        containers:
-        - capabilities: {}
-          env:
-          - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: mysql-db
-          - name: MYSQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-password
-                name: mysql-db
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-root-password
-                name: mysql-db
-          - name: MYSQL_DATABASE
-            valueFrom:
-              secretKeyRef:
-                key: database-name
-                name: mysql-db
-          image: " "
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            initialDelaySeconds: 30
-            tcpSocket:
-              port: 3306
-            timeoutSeconds: 1
-          name: mysql
-          ports:
-          - containerPort: 3306
-            protocol: TCP
-          readinessProbe:
-            exec:
-              command:
-              - "/bin/sh"
-              - "-i"
-              - "-c"
-              - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
-          resources:
-            limits:
-              memory: 512Mi
-          securityContext:
-            capabilities: {}
-            privileged: false
-          terminationMessagePath: "/dev/termination-log"
-          volumeMounts:
-          - mountPath: "/var/lib/mysql/data"
-            name: mysql-db-data
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        volumes:
-        - emptyDir:
-            medium: ''
-          name: mysql-db-data
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - mysql
-        from:
-          kind: ImageStreamTag
-          name: mysql:8.0
-          namespace: openshift
-        lastTriggeredImage: ''
-      type: ImageChange
-    - type: ConfigChange
-  status: {}
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: "apps/v1"
+kind: Deployment
+metadata:
+  labels:
+    app: "mysql-db"
+  name: "mysql-db"
+  namespace: chuck
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "mysql-db"
+    spec:
+      containers:
+      - name: "chuck-db"
+        image: "registry.redhat.io/rhscl/mysql-57-rhel7:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: database-user
+              name: mysql-db
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: database-password
+              name: mysql-db
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: database-root-password
+              name: mysql-db
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database-name
+              name: mysql-db
+#---
+#apiVersion: "apps/v1"
+#kind: Deployment
+#metadata:
+#  annotations:
+#    template.alpha.openshift.io/wait-for-ready: 'true'
+#  labels:
+#    template: mysql-ephemeral-template
+#  name: mysql-db
+#  namespace: chuck
+#spec:
+#  replicas: 1
+#  selector:
+#    name: mysql-db
+#  strategy:
+#    type: Recreate
+#  template:
+#    metadata:
+#      labels:
+#        name: mysql-db
+#    spec:
+#      containers:
+#      - capabilities: {}
+#        env:
+#        - name: MYSQL_USER
+#          valueFrom:
+#            secretKeyRef:
+#              key: database-user
+#              name: mysql-db
+#        - name: MYSQL_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: database-password
+#              name: mysql-db
+#        - name: MYSQL_ROOT_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: database-root-password
+#              name: mysql-db
+#        - name: MYSQL_DATABASE
+#          valueFrom:
+#            secretKeyRef:
+#              key: database-name
+#              name: mysql-db
+#        image: "registry.redhat.io/rhscl/mysql-57-rhel7:latest"
+#        imagePullPolicy: IfNotPresent
+#        livenessProbe:
+#          initialDelaySeconds: 30
+#          tcpSocket:
+#            port: 3306
+#          timeoutSeconds: 1
+#        name: mysql
+#        ports:
+#        - containerPort: 3306
+#          protocol: TCP
+#        readinessProbe:
+#          exec:
+#            command:
+#            - "/bin/sh"
+#            - "-i"
+#            - "-c"
+#            - MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'
+#          initialDelaySeconds: 5
+#          timeoutSeconds: 1
+#        resources:
+#          limits:
+#            memory: 512Mi
+#        securityContext:
+#          capabilities: {}
+#          privileged: false
+#        terminationMessagePath: "/dev/termination-log"
+#        volumeMounts:
+#        - mountPath: "/var/lib/mysql/data"
+#          name: mysql-db-data
+#      dnsPolicy: ClusterFirst
+#      restartPolicy: Always
+#      volumes:
+#      - emptyDir:
+#          medium: ''
+#        name: mysql-db-data
+#  triggers:
+#  - imageChangeParams:
+#      automatic: true
+#      containerNames:
+#      - mysql
+#      from:
+#        kind: ImageStreamTag
+#        name: mysql:8.0
+#        namespace: openshift
+#      lastTriggeredImage: ''
+#    type: ImageChange
+#  - type: ConfigChange
+#status: {}
