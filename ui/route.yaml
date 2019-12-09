@@ -12,5 +12,4 @@ spec:
     name: chuck-ui
     weight: 100
 status:
-  ingress:
-   - conditions:
+  ingress: []
