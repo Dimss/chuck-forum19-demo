@@ -41,6 +41,9 @@ metadata:
   namespace: chuck
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: "mysql-db"
   template:
     metadata:
       labels:
