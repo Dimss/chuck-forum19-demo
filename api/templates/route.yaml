@@ -12,5 +12,4 @@ spec:
     name: {{ .Chart.Name }}
     weight: 100
 status:
-  ingress:
-    - conditions:
+  ingress: []
