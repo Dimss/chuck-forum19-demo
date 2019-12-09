@@ -10,3 +10,6 @@ spec:
   to:
     kind: Service
     name: chuck-ui
+status:
+  ingress:
+   - conditions:
