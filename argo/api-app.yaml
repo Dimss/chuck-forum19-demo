@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: chuck-app
+  name: chuck-api
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,11 +11,12 @@ spec:
     namespace: chuck
     server: 'https://kubernetes.default.svc'
   source:
-    path: chuck-app
+    path: api
     repoURL: 'https://github.com/Dimss/chuck-forum19-demo.git'
     targetRevision: master
-    directory:
-      recurse: true
+    helm:
+      valueFiles:
+        - values.yaml
   syncPolicy:
     automated:
       selfHeal: true
