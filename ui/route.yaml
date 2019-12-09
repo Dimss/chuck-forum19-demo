@@ -10,6 +10,7 @@ spec:
   to:
     kind: Service
     name: chuck-ui
+    weight: 100
 status:
   ingress:
    - conditions:
