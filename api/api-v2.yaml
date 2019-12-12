@@ -1,48 +1,48 @@
-apiVersion: v1
-kind: Service
-metadata:
- name: chuck-api-v2
- namespace: "chuck"
-spec:
- selector:
-   app: chuck-api-v2
- ports:
-   - name: http
-     port: 80
-     targetPort: 8080
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
- name: chuck-api-v2
- namespace: chuck
- labels:
-   app: chuck-api-v2
-spec:
- replicas: 1
- selector:
-   matchLabels:
-     app: chuck-api-v2
- template:
-   metadata:
-     labels:
-       app: chuck-api-v2
-   spec:
-     containers:
-       - name: chuck-api-v2
-         image: docker.io/dimssss/chuck-api:latest
-         ports:
-           - containerPort: 8080
-         env:
-           - name: SPRING_PROFILES_ACTIVE
-             value: prod
-           - name: DB_HOST
-             value: "mysql-db"
-           - name: DB_NAME
-             value: "chuck"
-           - name: DB_USER
-             value: "chuck"
-           - name: DB_PASS
-             value: "chuck"
-           - name: JOKE_COLOR
-             value: "#61ff00"
+# apiVersion: v1
+# kind: Service
+# metadata:
+ # name: chuck-api-v2
+ # namespace: "chuck"
+# spec:
+ # selector:
+   # app: chuck-api-v2
+ # ports:
+   # - name: http
+     # port: 80
+     # targetPort: 8080
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+ # name: chuck-api-v2
+ # namespace: chuck
+ # labels:
+   # app: chuck-api-v2
+# spec:
+ # replicas: 1
+ # selector:
+   # matchLabels:
+     # app: chuck-api-v2
+ # template:
+   # metadata:
+     # labels:
+       # app: chuck-api-v2
+   # spec:
+     # containers:
+       # - name: chuck-api-v2
+         # image: docker.io/dimssss/chuck-api:latest
+         # ports:
+           # - containerPort: 8080
+         # env:
+           # - name: SPRING_PROFILES_ACTIVE
+             # value: prod
+           # - name: DB_HOST
+             # value: "mysql-db"
+           # - name: DB_NAME
+             # value: "chuck"
+           # - name: DB_USER
+             # value: "chuck"
+           # - name: DB_PASS
+             # value: "chuck"
+           # - name: JOKE_COLOR
+             # value: "#61ff00"
