@@ -1,25 +1,25 @@
- apiVersion: v1
- kind: Service
- metadata:
+apiVersion: v1
+kind: Service
+metadata:
   name: chuck-api-v2
   namespace: "chuck"
- spec:
+spec:
   selector:
     app: chuck-api-v2
   ports:
     - name: http
       port: 80
       targetPort: 8080
- ---
- apiVersion: apps/v1
- kind: Deployment
- metadata:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: chuck-api-v2
   namespace: chuck
   labels:
     app: chuck-api-v2
- spec:
-  replicas: 1
+spec:
+  replicas: 1  
   selector:
     matchLabels:
       app: chuck-api-v2
