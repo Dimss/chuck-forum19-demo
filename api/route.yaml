@@ -15,22 +15,22 @@
 #  ingress: []
 
 
- apiVersion: route.openshift.io/v1
- kind: Route
- metadata:
-  name: chuck-api
-  namespace: chuck
- spec:
-  host: chuck-api.apps.b.okto.ocplab.io
-  port:
-    targetPort:  http
-  to:
-    kind: Service
-    name: chuck-api-v1
-    weight: 50
-  alternateBackends:
-  - kind: Service
-    name: chuck-api-v2
-    weight: 50
- status:
-  ingress: []
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+ name: chuck-api
+ namespace: chuck
+spec:
+ host: chuck-api.apps.b.okto.ocplab.io
+ port:
+   targetPort:  http
+ to:
+   kind: Service
+   name: chuck-api-v1
+   weight: 50
+ alternateBackends:
+ - kind: Service
+   name: chuck-api-v2
+   weight: 50
+status:
+ ingress: []
